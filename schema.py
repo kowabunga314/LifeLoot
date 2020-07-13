@@ -14,19 +14,21 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
-    items: List[Item] = []
 
     class Config:
         orm_mode = True
 
 
 class GameBase(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
     home_id: int
+    home_user: User
     home_life: int = 20
     away_id: int
+    away_user: User
     away_life: int = 20
+    title: Optional[str] = None
+    description: Optional[str] = None
+    active: bool = True
 
 
 class GameCreate(GameBase):
