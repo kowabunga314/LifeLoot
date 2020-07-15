@@ -6,4 +6,5 @@ Life Tracker for Magic the Gathering
 
 Run these commands from the app directory:
 >pip install -r requirements.txt
+>
 >uvicorn app.main:app --reload
