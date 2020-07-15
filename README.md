@@ -8,7 +8,9 @@ Run these commands from the app directory:
 <br>
 <code>
   pip install -r requirements.txt
-  <br>
+</code>
+<br>
+<code>
   uvicorn app.main:app --reload
 </code>
 
