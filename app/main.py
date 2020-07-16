@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, Header, HTTPException
 
+from .auth import api as auth
 from .game import api as games
 from .user import api as users
 
