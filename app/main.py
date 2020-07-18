@@ -1,9 +1,9 @@
+import uvicorn
 from fastapi import Depends, FastAPI, Header, HTTPException
 from app.database import get_db
 from .auth import api as auth
 from .game import api as games
 from .user import api as users
-
 
 app = FastAPI()
 
@@ -29,3 +29,6 @@ app.include_router(
     tags=["games"],
     responses={404: {"description": "Not found"}},
 )
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)

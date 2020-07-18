@@ -15,3 +15,10 @@ Run these commands from the app directory:
 </code>
 
 Find the docs on your local session at [this address](http://localhost:8000/docs)
+
+
+<h3>How to upgrade DB</h3>
+<br>
+<code>alembic revision -m "<\a message about your commit>" --autogenerate</code>
+<br>
+<code>alembic upgrade head</code>
