@@ -10,7 +10,7 @@ from app.user.crud import create_user, get_user, get_users
 router = APIRouter()
 
 
-@router.post("/signup", tags=[TAGS.USER, TAGS.AUTH], response_model=UserRead)
+@router.post("/signup", tags=[TAGS.AUTH], response_model=UserRead)
 async def user_signup(user: UserCreate, session=Depends(get_db)):
     try:
         new_user = create_user(user=user, session=session)
@@ -29,21 +29,21 @@ async def user_signup(user: UserCreate, session=Depends(get_db)):
     
     return new_user
 
-@router.get("/", tags=[TAGS.USER], response_model=List[UserRead])
+@router.get("/", response_model=List[UserRead])
 async def read_users(skip:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
     return get_users(skip=skip, limit=limit, session=session)
 
 
-@router.get("/me", tags=[TAGS.USER], response_model=UserRead)
+@router.get("/me", response_model=UserRead)
 async def read_user_me():
     return {"username": "fakecurrentuser", "email": "foo@bar", "id":"1", "active": True}
 
 
-@router.get("/{username}", tags=[TAGS.USER], response_model=UserRead)
+@router.get("/{username}", response_model=UserRead)
 async def read_user(username: str):
     return {"username": username}
 
-@router.delete("/{user}", tags=[TAGS.USER])
+@router.delete("/{user}")
 async def delete_user(user: int, session=Depends(get_db)):
     user = get_user(session, user)
 

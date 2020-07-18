@@ -6,19 +6,18 @@ from app.game.schema import Game
 router = APIRouter()
 
 
-@router.get("/", tags=[TAGS.GAME], response_model=List[Game])
+@router.get("/", response_model=List[Game])
 async def read_games():
     return [{"name": "Game Foo"}, {"name": "Game Bar"}]
 
 
-@router.get("/{game_id}", tags=[TAGS.GAME], response_model=Game)
+@router.get("/{game_id}", response_model=Game)
 async def read_game(game_id: str):
     return {"name": "Fake Specific Game", "game_id": game_id}
 
 
 @router.put(
     "/{game_id}",
-    tags=[TAGS.GAME],
     responses={403: {"description": "Operation forbidden"}},
     response_model=Game
 )

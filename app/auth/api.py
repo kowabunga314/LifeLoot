@@ -17,7 +17,7 @@ from app.user.crud import get_user, get_user_by_username
 # Create router
 router = APIRouter()
 
-@router.post("/token", tags=[TAGS.AUTH], response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: SessionLocal = Depends(get_db)):
     user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
