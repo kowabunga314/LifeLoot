@@ -2,16 +2,16 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from app.config import TAGS
-from app.database import get_db
+from app.database import get_db, SessionLocal
 from app.auth.crypt import get_current_active_user
 from app.user.schema import UserBase, UserCreate, UserRead, User
-from app.user.crud import create_user, get_user, get_users
+from app.user.crud import create_user, get_user, get_users, get_user_by_username
 
 router = APIRouter()
 
 
 @router.post("/signup", tags=[TAGS.AUTH], response_model=UserRead)
-async def user_signup(user: UserCreate, session=Depends(get_db)):
+async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
     try:
         new_user = create_user(user=user, session=session)
     except ValueError as e:
@@ -41,11 +41,16 @@ async def read_user_me():
 
 
 @router.get("/{username}", response_model=UserRead)
-async def read_user(username: str):
-    return {"username": username}
+async def read_user(username: str, session:SessionLocal=Depends(get_db)):
+    user =  get_user_by_username(session=session, username=username)
+
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found.')
+    else:
+        return user
 
 @router.delete("/{user}")
-async def delete_user(user: int, session=Depends(get_db)):
+async def delete_user(user:int, session:SessionLocal=Depends(get_db)):
     user = get_user(session, user)
 
     if user:
