@@ -1,10 +1,14 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 from app.config import TAGS
-from app.game.schema import Game
+from app.game.schema import Game, GameBase
 
 router = APIRouter()
 
+
+@router.post('/', response_model=Game)
+async def create_game(game:GameBase):
+    pass
 
 @router.get("/", response_model=List[Game])
 async def read_games():

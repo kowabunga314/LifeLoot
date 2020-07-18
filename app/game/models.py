@@ -16,5 +16,5 @@ class Game(Base):
     description = Column(String)
     active = Column(Boolean, default=True)
 
-    home_user = relationship("User")
-    away_user = relationship("User")
+    home_user = relationship("User", foreign_keys=[home_id])
+    away_user = relationship("User", foreign_keys=[away_id])
