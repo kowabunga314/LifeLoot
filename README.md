@@ -22,3 +22,6 @@ Find the docs on your local session at [this address](http://localhost:8000/docs
 <code>alembic revision -m "<\a message about your commit>" --autogenerate</code>
 <br>
 <code>alembic upgrade head</code>
+
+
+<h3>To launch the app, go to clone project and specify the github address, not sure if the other stuff in here will break it that way<h3>
