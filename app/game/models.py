@@ -5,7 +5,7 @@ from app.database import Base
 
 
 class Game(Base):
-    __tablename__ = "game"
+    __tablename__ = "games"
 
     id = Column(Integer, primary_key=True, index=True)
     home_id = Column(Integer, ForeignKey("users.id"), index=True)

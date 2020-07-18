@@ -15,7 +15,7 @@ from app.user.crud import get_user, get_user_by_username
 
 
 # Create router
-api = APIRouter()
+router = APIRouter()
 
 def get_db():
     db = SessionLocal()
@@ -26,7 +26,7 @@ def get_db():
 
 
 
-@api.post("/token", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     session = get_db()
     user = authenticate_user(session, form_data.username, form_data.password)
@@ -38,13 +38,3 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     access_token = create_access_token(data={"sub": user.id})
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@api.get("/users/me/", response_model=UserBase)
-async def read_users_me(current_user: UserBase = Depends(get_current_active_user)):
-    return current_user
-
-
-@api.get("/users/me/items/")
-async def read_own_items(current_user: UserBase = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
