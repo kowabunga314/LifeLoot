@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from app.database import get_db
-from app.user.schema import UserCreate, UserRead
+from app.user.schema import UserCreate, UserRead, User
 from app.user.crud import create_user, get_users
 
 router = APIRouter()
@@ -12,7 +12,8 @@ router = APIRouter()
 async def user_signup(user: UserCreate, session=Depends(get_db)):
     try:
         new_user = create_user(user=user, session=session)
-    except Exception as e:
+    except ValueError as e:
+        # Email or username already exists
         raise HTTPException(status_code=400, detail=e.args[0])
     
     if new_user:
@@ -20,13 +21,14 @@ async def user_signup(user: UserCreate, session=Depends(get_db)):
             session.add(new_user)
             session.commit()
             session.refresh(new_user)
-        except IntegrityError as e:
+        except Exception as e:
+            # Something else went wrong while saving user data
             raise HTTPException(status_code=400, detail=e.args[0])
     
-    return UserRead(new_user)
+    return new_user
 
 @router.get("/", tags=["users"], response_model=List[UserRead])
-async def read_users(skip:int=0, limit:int=0, session=Depends(get_db)):
+async def read_users(skip:int=0, limit:int=100, session=Depends(get_db)):
     return get_users(skip=skip, limit=limit, session=session)
 
 
