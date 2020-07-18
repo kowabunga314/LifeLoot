@@ -30,7 +30,8 @@ async def user_signup(user: UserCreate, session=Depends(get_db)):
     return new_user
 
 @router.get("/", response_model=List[UserRead])
-async def read_users(skip:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
+# async def read_users(skip:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
+async def read_users(skip:int=0, limit:int=100, session=Depends(get_db)):
     return get_users(skip=skip, limit=limit, session=session)
 
 
