@@ -2,7 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from app.database import get_db
-from app.user.schema import UserCreate, UserRead, User
+from app.auth.crypt import get_current_active_user
+from app.user.schema import UserBase, UserCreate, UserRead, User
 from app.user.crud import create_user, get_users
 
 router = APIRouter()
@@ -28,7 +29,7 @@ async def user_signup(user: UserCreate, session=Depends(get_db)):
     return new_user
 
 @router.get("/", tags=["users"], response_model=List[UserRead])
-async def read_users(skip:int=0, limit:int=100, session=Depends(get_db)):
+async def read_users(skip:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
     return get_users(skip=skip, limit=limit, session=session)
 
 
