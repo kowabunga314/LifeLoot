@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
+from app.config import TAGS
 from app.game.schema import Game
 
 router = APIRouter()
@@ -17,7 +18,6 @@ async def read_game(game_id: str):
 
 @router.put(
     "/{game_id}",
-    tags=["custom"],
     responses={403: {"description": "Operation forbidden"}},
     response_model=Game
 )

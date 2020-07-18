@@ -15,6 +15,9 @@ class UserRead(UserBase):
     id: int
     active: bool
 
+    class Config:
+        orm_mode = True
+
 
 class User(UserBase):
     id: int
