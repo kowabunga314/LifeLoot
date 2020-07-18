@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from .crypt import authenticate_user, get_current_active_user, create_access_token
 from .hash import verify_password, get_password_hash
 from .schema import Token, TokenData
-from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.config import TAGS, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.database import SessionLocal, get_db
 from app.user.schema import UserBase, UserCreate
 from app.user.crud import get_user, get_user_by_username
@@ -17,7 +17,7 @@ from app.user.crud import get_user, get_user_by_username
 # Create router
 router = APIRouter()
 
-@router.post("/token", response_model=Token)
+@router.post("/token", tags=[TAGS.AUTH], response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: SessionLocal = Depends(get_db)):
     user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
