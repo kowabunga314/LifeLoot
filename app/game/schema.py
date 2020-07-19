@@ -27,3 +27,10 @@ class Game(GameBase):
 
     class Config:
         orm_mode = True
+
+
+class ScoreUpdate(BaseModel):
+    id: int
+    team: str
+    increment: Optional[int]
+    absolute: Optional[int]

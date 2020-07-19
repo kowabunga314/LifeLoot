@@ -30,4 +30,3 @@ def create_user(session: Session, user: schema.UserCreate):
     except Exception as e:
         raise e
     return session_user
-
