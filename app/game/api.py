@@ -27,16 +27,15 @@ async def read_games(skip:int=0, limit:int=100, session:SessionLocal=Depends(get
 
 
 @router.get("/{game_id}", response_model=Game)
-async def get_game(game_id: str, session: SessionLocal = Depends(get_db)):
+async def get_game(game_id: int, session: SessionLocal = Depends(get_db)):
     return crud.get_game_by_id(session=session, game_id=game_id)
 
 
 @router.put(
     "/{game_id}",
-    responses={403: {"description": "Operation forbidden"}},
     response_model=Game
 )
-async def update_life(state: ScoreUpdate, session: SessionLocal = Depends(get_db)):
+async def update_life(game_id:int, state: ScoreUpdate, session: SessionLocal = Depends(get_db)):
     """
     Uses the increment parameter by default, absolute value will be ignored if
         increment is used.
@@ -49,7 +48,6 @@ async def update_life(state: ScoreUpdate, session: SessionLocal = Depends(get_db
         raise HTTPException(status_code=400, detail=e.args[0])
 
     if game:
-        session.update(game)
         session.commit()
         session.refresh(game)
     else:
@@ -65,7 +63,6 @@ async def end_game(game_id: int, session: SessionLocal = Depends(get_db)):
         raise HTTPException(status_code=404, detail='That game does not exist.')
 
     if game:
-        session.update(game)
         session.commit()
         session.refresh(game)
     else:

@@ -31,7 +31,7 @@ class Game(GameBase):
 
 class ScoreUpdate(BaseModel):
     game_id: int
-    team: str
+    team: str                   # Can be 'home' or 'away'
     increment: Optional[int]
     absolute: Optional[int]
 
