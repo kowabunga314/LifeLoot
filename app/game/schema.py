@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from app.user.schema import UserRead
 
 
@@ -30,7 +30,11 @@ class Game(GameBase):
 
 
 class ScoreUpdate(BaseModel):
-    id: int
+    game_id: int
     team: str
     increment: Optional[int]
     absolute: Optional[int]
+
+    # @validator('home', 'away', pre=True)
+    # def validate_team(cls, v):
+    #     pass

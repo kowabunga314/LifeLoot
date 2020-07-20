@@ -37,11 +37,39 @@ async def get_game(game_id: str, session: SessionLocal = Depends(get_db)):
     response_model=Game
 )
 async def update_life(state: ScoreUpdate, session: SessionLocal = Depends(get_db)):
-    game = crud.get_game_by_id(session=session, game_id=state.id)
+    """
+    Uses the increment parameter by default, absolute value will be ignored if
+        increment is used.
+    """
+    try:
+        game = crud.update_life(state=state, session=session)
+    except LookupError:
+        raise HTTPException(status_code=404, detail='That game does not exist.')
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=e.args[0])
 
-    if not game:
+    if game:
+        session.update(game)
+        session.commit()
+        session.refresh(game)
+    else:
+        raise HTTPException(status_code=400, detail='Failed to update game.')
+    
+    return game
+
+@router.put('/{game_id}/end', response_model=Game)
+async def end_game(game_id: int, session: SessionLocal = Depends(get_db)):
+    try:
+        game = crud.end_game(game_id=game_id, session=session)
+    except LookupError:
         raise HTTPException(status_code=404, detail='That game does not exist.')
 
+    if game:
+        session.update(game)
+        session.commit()
+        session.refresh(game)
+    else:
+        raise HTTPException(status_code=400, detail='Failed to update game.')
     
-
-    return
+    return game
+    
