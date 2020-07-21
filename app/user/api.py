@@ -31,11 +31,10 @@ async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
 
 @router.get("/search", response_model=List[UserRead])
 async def search_users(params: UserQuery = Depends(), session: SessionLocal = Depends(get_db)):
-    # params = UserQuery()
     try:
         users = query_users(params=params, session=session)
     except Exception as e:
-        raise e
+        raise HTTPException(status_code=400, detail=e.args[0])
 
     return users
 
