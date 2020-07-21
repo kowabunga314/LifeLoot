@@ -26,3 +26,26 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+# class UserQuery():
+#     email: Optional[str] = None
+#     username: Optional[str] = None
+#     active: Optional[bool] = None
+#     page: Optional[int] = 0
+#     limit: Optional[int] = 100
+
+class UserQuery:
+    def __init__(
+        self,
+        email: Optional[str] = None,
+        username: Optional[str] = None,
+        active: Optional[bool] = None,
+        page: Optional[int] = 0,
+        limit: Optional[int] = 100
+    ):
+        self.email = email
+        self.username = username
+        self.active = active
+        self.page = page
+        self.limit = limit

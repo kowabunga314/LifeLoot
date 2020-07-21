@@ -4,8 +4,8 @@ from sqlalchemy.exc import IntegrityError
 from app.config import TAGS
 from app.database import get_db, SessionLocal
 from app.auth.crypt import get_current_active_user
-from app.user.schema import UserBase, UserCreate, UserRead, User
-from app.user.crud import create_user, get_user, get_users, get_user_by_username
+from app.user.schema import UserBase, UserCreate, UserRead, User, UserQuery
+from app.user.crud import create_user, query_users, get_user, get_users, get_user_by_username
 
 router = APIRouter()
 
@@ -29,10 +29,20 @@ async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
     
     return new_user
 
+@router.get("/search", response_model=List[UserRead])
+async def search_users(params: UserQuery = Depends(), session: SessionLocal = Depends(get_db)):
+    # params = UserQuery()
+    try:
+        users = query_users(params=params, session=session)
+    except Exception as e:
+        raise e
+
+    return users
+
 @router.get("/", response_model=List[UserRead])
-# async def read_users(skip:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
-async def read_users(skip:int=0, limit:int=100, session=Depends(get_db)):
-    return get_users(skip=skip, limit=limit, session=session)
+# async def read_users(page:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
+async def read_users(page: int = 0, limit: int = 100, session: SessionLocal = Depends(get_db)):
+    return get_users(page=page, limit=limit, session=session)
 
 
 @router.get("/me", response_model=UserRead)

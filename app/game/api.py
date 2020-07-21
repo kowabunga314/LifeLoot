@@ -22,7 +22,7 @@ async def new_game(game:GameBase, session:SessionLocal=Depends(get_db)):
     return new_game
 
 @router.get("/", response_model=List[Game])
-async def read_games(skip:int=0, limit:int=100, session:SessionLocal=Depends(get_db)):
+async def read_games(page:int=0, limit:int=100, session:SessionLocal=Depends(get_db)):
     return crud.get_games(session=session)
 
 

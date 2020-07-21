@@ -13,8 +13,8 @@ def get_game_by_id(session: SessionLocal, game_id: int):
 def get_games_by_user(session: SessionLocal, user_id: int):
     return session.query(models.Game).filter(models.Game.home_id == user_id, models.Game.away_id == user_id).all()
 
-def get_games(session: SessionLocal, skip: int = 0, limit: int = 100):
-    return session.query(models.Game).offset(skip).limit(limit).all()
+def get_games(session: SessionLocal, page: int = 0, limit: int = 100):
+    return session.query(models.Game).offset(page).limit(limit).all()
 
 def update_life(session: SessionLocal, state: ScoreUpdate):
     game = session.query(models.Game).filter(models.Game.id == state.game_id).first()
