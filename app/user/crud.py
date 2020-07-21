@@ -5,13 +5,16 @@ from app.auth.hash import get_password_hash
 
 
 def query_users(session: Session, params: schema.UserQuery):
+    # Create base query
     users = session.query(models.User)
 
+    # Add filter criteria
     if params.email is not None: users = users.filter(models.User.email.like(f'%{params.email}%'))
     if params.username is not None: users = users.filter(models.User.username.like(f'%{params.username}%'))
     if params.active is not None: users = users.filter(models.User.active == params.active)
 
     try:
+        # Complete query and get results
         users = users.slice(params.page*params.limit, params.limit*params.page+params.limit).all()
     except Exception as e:
         raise e
