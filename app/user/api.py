@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from app.config import TAGS
 from app.database import get_db, SessionLocal
@@ -39,8 +40,8 @@ async def search_users(params: UserQuery = Depends(), session: SessionLocal = De
     return users
 
 @router.get("/", response_model=List[UserRead])
-# async def read_users(page:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
-async def read_users(page: int = 0, limit: int = 100, session: SessionLocal = Depends(get_db)):
+async def read_users(page:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
+# async def read_users(page: int = 0, limit: int = 100, session: SessionLocal = Depends(get_db)):
     return get_users(page=page, limit=limit, session=session)
 
 

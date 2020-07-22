@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 from . import models, schema
+from app.database import page_fields
 from app.auth.hash import get_password_hash
 
 
@@ -15,7 +16,8 @@ def query_users(session: Session, params: schema.UserQuery):
 
     try:
         # Complete query and get results
-        users = users.slice(params.page*params.limit, params.limit*params.page+params.limit).all()
+        start, end = page_fields(page=params.page, limit=params.limit)
+        users = users.slice(start, end).all()
     except Exception as e:
         raise e
 

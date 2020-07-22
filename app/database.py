@@ -18,3 +18,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Helper function to get start and end values for slice method
+def page_fields(page: int, limit: int):
+    start = page * limit
+    end = limit * page + limit
+
+    return start, end
