@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from app.config import TAGS
 from app.database import get_db, SessionLocal
-from app.auth.crypt import get_current_active_user
+from app.auth.crypt import Context
 from app.user.schema import UserBase, UserCreate, UserRead, User, UserQuery
 from app.user.crud import create_user, query_users, get_user, get_users, get_user_by_username
 
@@ -31,18 +31,18 @@ async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
     return new_user
 
 @router.get("/search", response_model=List[UserRead])
-async def search_users(params: UserQuery = Depends(), session: SessionLocal = Depends(get_db), agent: UserBase = Depends(get_current_active_user)):
+async def search_users(params: UserQuery = Depends(), context: Context = Depends()):
     try:
-        users = query_users(params=params, session=session)
+        users = query_users(params=params, session=context.session)
     except Exception as e:
         raise HTTPException(status_code=400, detail=e.args[0])
 
     return users
 
 @router.get("/", response_model=List[UserRead])
-async def read_users(page:int=0, limit:int=100, session=Depends(get_db)):
-# async def read_users(page: int = 0, limit: int = 100, session: SessionLocal = Depends(get_db)):
-    return get_users(page=page, limit=limit, session=session)
+# async def read_users(page:int=0, limit:int=100, session=Depends(get_db)):
+async def read_users(page: int = 0, limit: int = 100, context: Context = Depends()):
+    return get_users(page=page, limit=limit, session=context.session)
 
 
 @router.get("/me", response_model=UserRead)

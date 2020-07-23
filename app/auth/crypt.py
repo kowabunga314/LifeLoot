@@ -54,3 +54,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+class Context():
+    def __init__(self, session: SessionLocal = Depends(get_db), agent: UserBase = Depends(get_current_active_user)):
+        self.session = session
+        self.agent = agent
