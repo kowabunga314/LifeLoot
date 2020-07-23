@@ -8,8 +8,8 @@ from app.auth.crypt import get_current_active_user
 from app.user.schema import UserBase, UserCreate, UserRead, User, UserQuery
 from app.user.crud import create_user, query_users, get_user, get_users, get_user_by_username
 
-router = APIRouter()
 
+router = APIRouter()
 
 @router.post("/signup", tags=[TAGS.AUTH], response_model=UserRead)
 async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
@@ -31,7 +31,7 @@ async def user_signup(user: UserCreate, session:SessionLocal=Depends(get_db)):
     return new_user
 
 @router.get("/search", response_model=List[UserRead])
-async def search_users(params: UserQuery = Depends(), session: SessionLocal = Depends(get_db)):
+async def search_users(params: UserQuery = Depends(), session: SessionLocal = Depends(get_db), agent: UserBase = Depends(get_current_active_user)):
     try:
         users = query_users(params=params, session=session)
     except Exception as e:
@@ -40,7 +40,7 @@ async def search_users(params: UserQuery = Depends(), session: SessionLocal = De
     return users
 
 @router.get("/", response_model=List[UserRead])
-async def read_users(page:int=0, limit:int=100, session=Depends(get_db), agent:UserBase = Depends(get_current_active_user)):
+async def read_users(page:int=0, limit:int=100, session=Depends(get_db)):
 # async def read_users(page: int = 0, limit: int = 100, session: SessionLocal = Depends(get_db)):
     return get_users(page=page, limit=limit, session=session)
 

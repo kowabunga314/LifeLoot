@@ -28,13 +28,6 @@ class User(UserBase):
         orm_mode = True
 
 
-# class UserQuery():
-#     email: Optional[str] = None
-#     username: Optional[str] = None
-#     active: Optional[bool] = None
-#     page: Optional[int] = 0
-#     limit: Optional[int] = 100
-
 class UserQuery:
     def __init__(
         self,
