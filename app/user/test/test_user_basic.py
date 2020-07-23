@@ -26,6 +26,13 @@ def test_create_user():
     context['user_username'] = response.json()['username']
     context['user_email'] = response.json()['email']
 
+def test_login_user():
+    body = {'username': 'wumbo', 'password': 'password'}
+    response = client.post('/token', body)
+    assert response.status_code == 200
+    context['access_token'] = response.json()['access_token']
+    context['headers'] = {'Authorization': f"Bearer {context['access_token']}"}
+
 def test_get_user_by_id():
     response = client.get(f"/users/{context.get('user_id', 1)}")
     assert response.status_code == 404
@@ -45,7 +52,7 @@ def test_get_user_by_email():
     assert response.status_code == 404
 
 def test_read_users():
-    response = client.get("/users/")
+    response = client.get("/users/", headers=context['headers'])
     assert response.status_code == 200
     assert response.json() == [
         {

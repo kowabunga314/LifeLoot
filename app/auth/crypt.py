@@ -4,6 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.database import SessionLocal, get_db
 from app.user.schema import UserBase
 from app.user.crud import get_user, get_user_by_username
 from .schema import TokenData
@@ -12,7 +13,7 @@ from .hash import verify_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def authenticate_user(session, username: str, password: str):
+def authenticate_user(session: SessionLocal, username: str, password: str):
     user = get_user_by_username(session, username)
     if not user:
         return False
@@ -20,7 +21,7 @@ def authenticate_user(session, username: str, password: str):
         return False
     return user
 
-async def get_current_user(session, token: str = Depends(oauth2_scheme)):
+async def get_current_user(session: SessionLocal = Depends(get_db), token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -28,13 +29,13 @@ async def get_current_user(session, token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
+        username: str = payload.get("sub")
+        if username is None:
             raise credentials_exception
-        token_data = TokenData(user_id=user_id)
+        token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(session, user_id=token_data.user_id)
+    user = get_user_by_username(session, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -53,3 +54,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+class Context():
+    def __init__(self, session: SessionLocal = Depends(get_db), agent: UserBase = Depends(get_current_active_user)):
+        self.session = session
+        self.agent = agent
