@@ -25,6 +25,7 @@ async def new_game(game:GameBase, context: Context = Depends()):
 
     return new_game
 
+
 @router.get("/mine", response_model=List[Game])
 async def my_games(page:int=0, limit:int=100, context: Context = Depends()):
     '''
@@ -65,6 +66,7 @@ async def update_life(game_id:int, state: ScoreUpdate, context: Context = Depend
         raise HTTPException(status_code=400, detail='Failed to update game.')
     
     return game
+
 
 @router.put('/{game_id}/end', response_model=Game)
 async def end_game(game_id: int, context: Context = Depends()):
