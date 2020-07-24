@@ -19,6 +19,10 @@ router = APIRouter()
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: SessionLocal = Depends(get_db)):
+    '''
+        Request an access token to authenticate user. Based off of OAuth2 password flow.
+            Returns JWT to be sent as a bearer for authenticated requests.
+    '''
     user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
