@@ -79,6 +79,9 @@ async def delete_user(user:int, context: Context = Depends()):
     '''
         Deletes a user.
     '''
+    if user != context.agent.id:
+        raise HTTPException(status_code=400, detail='Hey, you shouldn\'t delete other users!')
+    
     user = get_user(context.session, user)
 
     if user:
